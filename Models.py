@@ -9,15 +9,11 @@ import sys
 
 image_wh = 256                          #Dimension both width and height
 BATCH_SIZE = 32                         #Training sample per one iteration
-
-
-
+channels = 3                            #RGB
+epochs = 50                             
 
 # 80% -> training
 # 20% -> 10% validation, 10% test
-channels = 3
-epochs = 50
-
 
 dataset = tf.keras.preprocessing.image_dataset_from_directory(
     "Potatoes",

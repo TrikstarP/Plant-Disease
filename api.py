@@ -8,15 +8,15 @@ import tensorflow as tf
 
 app = FastAPI()
 
-directory = "D:\Personal\Project\Plant Disease\Models\model_version_1"
+model_directory = "D:\Personal\Project\Plant Disease\Models\model_version_2"
 
-MODEL = tf.keras.models.load_model(directory)
+MODEL = tf.keras.models.load_model(model_directory)
 CLASS_NAMES = ["Early Blight", "Late Blight", "Healthy"]
 
 
 @app.get("/")
 async def root():
-    return "Hello world"
+    return "Hello"
 
 def read_file_as_image(data) -> np.ndarray:
     image = np.array(Image.open(BytesIO(data)))
@@ -28,7 +28,11 @@ async def predict(file: UploadFile = File(...)):
     img_batch = np.expand_dims(image, 0)
 
     predictions = MODEL.predict(img_batch)
-    pass
+
+    predicted_class = CLASS_NAMES[np.argmax(predictions[0])]
+    confidence = np.max(predictions[0])
+    return{'class': predicted_class, 'confidence': float(confidence)}
+
 
 if __name__ == "__main__":
     uvicorn.run(app, host='localhost', port=8000)
